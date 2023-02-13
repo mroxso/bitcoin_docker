@@ -1,7 +1,7 @@
 # BUILDER
 FROM ubuntu:latest as builder
 
-ARG checkout="master"
+ARG checkout="tags/v24.0.1"
 ARG git_url="https://github.com/bitcoin/bitcoin"
 
 RUN apt update && apt install -y \
@@ -32,9 +32,12 @@ WORKDIR /src
 # Git clone a specific tag
 RUN rm -rf /src
 RUN git clone ${git_url} /src
-RUN git checkout ${checkout} -b local/${checkout}
+RUN git checkout ${checkout}
 
-RUN ./autogen.sh && ./configure --without-gui && make -j $(nproc) && make install
+RUN ./autogen.sh
+RUN ./configure --without-gui
+RUN make -j $(nproc)
+RUN make install
 
 # FINAL IMAGE
 FROM ubuntu:latest as final
