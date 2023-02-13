@@ -19,7 +19,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
+  IMAGE_NAME: bitcoin
 
 jobs:
   build-and-push-image:
@@ -56,7 +56,8 @@ jobs:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           # tags: |
           #     type=semver,enable=true,pattern=v{{major}}.{{minor}},value=${{ github.event.inputs.checkout }}.99
-              
+          tags: |
+            ${{ github.event.inputs.checkout }}
       - name: Build and push Docker image
         uses: docker/build-push-action@v3
         with:
