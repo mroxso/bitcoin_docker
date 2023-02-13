@@ -50,10 +50,11 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create correct Image tag
+        id: create-tag
         run: |
           IFS='/'
           read -a strarr <<< "${{ github.event.inputs.checkout }}"
-          echo IMAGE_TAG=${strarr[1]} >> $GITHUB_ENV
+          echo IMAGE_TAG=${strarr[1]} >> $GITHUB_OUTPUT
 
       - name: Extract metadata (tags, labels) for Docker
         id: meta
@@ -63,7 +64,7 @@ jobs:
           # tags: |
           #     type=semver,enable=true,pattern=v{{major}}.{{minor}},value=${{ github.event.inputs.checkout }}.99
           tags: |
-            ${{ env.IMAGE_TAG }}
+            ${{ steps.create-tag.outputs.IMAGE_TAG }}
       - name: Build and push Docker image
         uses: docker/build-push-action@v3
         with:
